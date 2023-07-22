@@ -1,0 +1,106 @@
+CREATE TABLE "user" (
+  "id" SERIAL PRIMARY KEY,
+  "name" varchar,
+  "email" varchar,
+  "is_admin" boolean default false
+);
+
+CREATE TABLE "permissions" (
+  "id" SERIAL PRIMARY KEY,
+  "permission_name" varchar,
+  "permission_detail" varchar
+);
+
+CREATE TABLE "roles" (
+  "id" SERIAL PRIMARY KEY,
+  "role_name" varchar
+);
+
+CREATE TABLE "users_role_permissions" (
+  "id" SERIAL PRIMARY KEY,
+  "user_id" SERIAL,
+  "role_id" SERIAL,
+  "permission_id" SERIAL
+);
+
+CREATE TABLE "login" (
+  "id" SERIAL PRIMARY key, 		
+  "user_id" SERIAL,
+  "email" varchar,
+  "pass" varchar,
+  "secret" varchar,
+  "time" date
+);
+
+CREATE TABLE "Events" (
+  "id" SERIAL PRIMARY KEY,
+  "created_at" date,
+  "modify_by_id" SERIAL,
+  "created_by_id" SERIAL,
+  "name" varchar,
+  "start_date" date,
+  "end_date" date,
+  "timeslot_id" SERIAL,
+  "location_id" SERIAL,
+  "sec_req" bool,
+  "guests" bool,
+  "guests_detail" varchar,
+  "audience" varchar, 
+  "need_sound" bool,
+  "need_projector" bool,
+  "need_catering" bool,
+  "need_decor" bool,
+  "need_tech_support" bool,
+  "event_supervision" varchar,
+  "status" varchar
+);
+
+
+
+CREATE TABLE "event_log" (
+  "id" SERIAL PRIMARY KEY,
+  "admin_id" SERIAL,
+  "event_id" SERIAL,
+  "event_name" varchar,
+  "event_status" varchar
+);
+
+CREATE TABLE "location" (
+  "id" SERIAL PRIMARY KEY,
+  "name" varchar,
+  "type" varchar,
+  "seats" int4,
+  "seat_types" varchar,
+  "projector" bool,
+  "smart_board" bool
+);
+
+CREATE TABLE "timeslots" (
+  "id" SERIAL PRIMARY KEY,
+  "from" time,
+  "to" time,
+  "day" varchar
+);
+
+select * from "user"
+
+
+ALTER TABLE "users_role_permissions" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
+
+ALTER TABLE "users_role_permissions" ADD FOREIGN KEY ("role_id") REFERENCES "roles" ("id");
+
+ALTER TABLE "users_role_permissions" ADD FOREIGN KEY ("permission_id") REFERENCES "permissions" ("id");
+
+ALTER TABLE "login" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
+
+ALTER TABLE "events" ADD FOREIGN KEY ("modify_by_id") REFERENCES "user" ("id");
+
+ALTER TABLE "events" ADD FOREIGN KEY ("created_by_id") REFERENCES "user" ("id");
+
+ALTER TABLE "events" ADD FOREIGN KEY ("timeslot_id") REFERENCES "timeslots" ("id");
+
+ALTER TABLE "events" ADD FOREIGN KEY ("location_id") REFERENCES "location" ("id");
+
+ALTER TABLE "event_log" ADD FOREIGN KEY ("admin_id") REFERENCES "user" ("id");
+
+ALTER TABLE "event_log" ADD FOREIGN KEY ("event_id") REFERENCES "events" ("id");
